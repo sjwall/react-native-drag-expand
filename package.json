@@ -1,0 +1,21 @@
+{
+  "name": "react-native-drag-expand-workspace",
+  "private": true,
+  "packageManager": "yarn@4.5.1",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sjwall/react-native-drag-expand"
+  },
+  "license": "MIT",
+  "scripts": {
+    "prettier": "prettier . --write"
+  },
+  "workspaces": [
+    "example",
+    "lib"
+  ],
+  "devDependencies": {
+    "prettier": "3.3.3"
+  }
+}

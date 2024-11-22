@@ -1,0 +1,98 @@
+{
+  "name": "react-native-drag-expand",
+  "version": "0.1.0",
+  "main": "./dist/commonjs/index.js",
+  "author": "Sam Wall <oss@samuelwall.co.uk>",
+  "license": "MIT",
+  "description": "Component to use drag gesture to expand or collapse a view size.",
+  "homepage": "https://github.com/sjwall/react-native-drag-expand/#readme",
+  "bugs": "https://github.com/sjwall/react-native-drag-expand/issues",
+  "keywords": [
+    "react-native",
+    "ui",
+    "drag",
+    "expand",
+    "collapse",
+    "react",
+    "jsx"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sjwall/react-native-drag-expand.git"
+  },
+  "devDependencies": {
+    "react-native-gesture-handler": "^2.21.2",
+    "react-native-reanimated": "^3.16.2",
+    "react": "^18.3.1",
+    "react-native": "^0.76.2",
+    "react-native-builder-bob": "^0.32.0",
+    "typescript": "^5.6.3"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*",
+    "react-native-gesture-handler": "*",
+    "react-native-reanimated": "*"
+  },
+  "create-react-native-library": {
+    "languages": "js",
+    "type": "library",
+    "version": "0.44.1"
+  },
+  "source": "./src/index.tsx",
+  "react-native": "./src/index.tsx",
+  "module": "./dist/module/index.js",
+  "types": "./dist/typescript/commonjs/src/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "react-native": "./src/index.tsx",
+        "types": "./dist/typescript/module/src/index.d.ts",
+        "default": "./dist/module/index.js"
+      },
+      "require": {
+        "react-native": "./src/index.tsx",
+        "types": "./dist/typescript/commonjs/src/index.d.ts",
+        "default": "./dist/commonjs/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "prepare": "bob build"
+  },
+  "files": [
+    "src",
+    "dist",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__"
+  ],
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "dist",
+    "targets": [
+      [
+        "commonjs",
+        {
+          "esm": true
+        }
+      ],
+      [
+        "module",
+        {
+          "esm": true
+        }
+      ],
+      [
+        "typescript",
+        {
+          "esm": true
+        }
+      ]
+    ]
+  },
+  "eslintIgnore": [
+    "node_modules/",
+    "dist/"
+  ]
+}
