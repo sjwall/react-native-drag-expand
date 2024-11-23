@@ -83,9 +83,18 @@ const Container: FC<ContainerProps> = ({children}) => {
       heightOffset.value,
   }))
 
-  const animateCollapsedStyles = useAnimatedStyle(() => ({
-    opacity: expanded.value ? 0 : 1,
-  }))
+  const animateCollapsedStyles = useAnimatedStyle(() => {
+    if (heightOffset.value === 0) {
+      return {
+        opacity: expanded.value ? 0 : 1,
+      }
+    }
+    const heightDiff = heightExpanded.current - heightCollapsed.current
+    const diff = (1 / heightDiff) * Math.abs(heightOffset.value)
+    return {
+      opacity: expanded.value ? diff : 1 - diff,
+    }
+  })
 
   const updateHeight = () => {
     if (!pressed.value) {
