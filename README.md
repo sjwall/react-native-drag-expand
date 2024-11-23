@@ -12,6 +12,8 @@
 <br />
 <br />
 
+![Demo](./demo.gif)
+
 ## Installing react-native-drag-expand
 
 To install react-native-drag-expand:
