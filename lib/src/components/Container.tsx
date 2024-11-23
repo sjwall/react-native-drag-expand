@@ -83,10 +83,6 @@ const Container: FC<ContainerProps> = ({children}) => {
       heightOffset.value,
   }))
 
-  const animateExpandedStyles = useAnimatedStyle(() => ({
-    opacity: expanded.value ? 1 : 0,
-  }))
-
   const animateCollapsedStyles = useAnimatedStyle(() => ({
     opacity: expanded.value ? 0 : 1,
   }))
@@ -105,7 +101,7 @@ const Container: FC<ContainerProps> = ({children}) => {
       <Animated.View style={[styles.wrapper, animateHeightStyles]}>
         {expandedChildren && (
           <SectionContainer
-            style={[styles.containerExpanded, animateExpandedStyles]}
+            style={styles.containerExpanded}
             onLayout={(e) => {
               heightExpanded.current = e.nativeEvent.layout.height
               updateHeight()
