@@ -4,9 +4,10 @@
   Bring your own UI drag expand view.
 </h3>
 
-<div align="center">
-  <img alt="NPM downloads" src="https://img.shields.io/npm/dw/react-native-drag-expand?logo=npm&label=NPM%20downloads&cacheSeconds=3600"/>
-</div>
+[![npm version](https://badge.fury.io/js/react-native-drag-expand.svg)][npm]
+[![npm downloads](https://img.shields.io/npm/dw/react-native-drag-expand?logo=npm&label=NPM%20downloads&cacheSeconds=3600)][npm]
+[![GitHub license](https://img.shields.io/github/license/sjwall/react-native-drag-expand)][license]
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)][pr]
 
 <br />
 <br />
@@ -50,3 +51,11 @@ export default function App() {
   )
 }
 ```
+
+<!-- Definitions -->
+
+[license]: https://github.com/sjwall/react-native-drag-expand/blob/main/LICENSE
+
+[npm]: https://www.npmjs.com/package/react-native-drag-expand
+
+[pr]: http://makeapullrequest.com
