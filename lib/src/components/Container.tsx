@@ -98,10 +98,9 @@ const Container: FC<ContainerProps> = ({children}) => {
 
   const updateHeight = () => {
     if (!pressed.value) {
-      height.set(
+      height.value =
         (expanded.value ? heightExpanded.current : heightCollapsed.current) +
-          heightKnob.current,
-      )
+        heightKnob.current
     }
   }
 
