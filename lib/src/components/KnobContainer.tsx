@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler'
-import React, {type FC, type PropsWithChildren, type RefObject} from 'react'
+import React, {type FC, type PropsWithChildren} from 'react'
 import {type ViewProps} from 'react-native'
 import Animated, {
   useAnimatedStyle,
