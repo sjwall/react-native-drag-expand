@@ -2,7 +2,6 @@ import React, {
   Children,
   cloneElement,
   useMemo,
-  useRef,
   type FC,
   type PropsWithChildren,
   type ReactElement,
@@ -68,17 +67,17 @@ const Container: FC<ContainerProps> = ({children}) => {
     ]
   }, [children])
 
-  const heightCollapsed = useRef<number>(50)
-  const heightExpanded = useRef<number>(50)
-  const heightKnob = useRef<number>(50)
+  const heightCollapsed = useSharedValue<number>(0)
+  const heightExpanded = useSharedValue<number>(0)
+  const heightKnob = useSharedValue<number>(0)
   const heightOffset = useSharedValue<number>(0)
   const pressed = useSharedValue<boolean>(false)
   const expanded = useSharedValue<boolean>(false)
 
   const animateHeightStyles = useAnimatedStyle(() => ({
     height:
-      (expanded.value ? heightExpanded.current : heightCollapsed.current) +
-      heightKnob.current +
+      (expanded.value ? heightExpanded.value : heightCollapsed.value) +
+      heightKnob.value +
       heightOffset.value,
   }))
 
@@ -88,7 +87,7 @@ const Container: FC<ContainerProps> = ({children}) => {
         opacity: expanded.value ? 0 : 1,
       }
     }
-    const heightDiff = heightExpanded.current - heightCollapsed.current
+    const heightDiff = heightExpanded.value - heightCollapsed.value
     const diff = (1 / heightDiff) * Math.abs(heightOffset.value)
     return {
       opacity: expanded.value ? diff : 1 - diff,
@@ -102,7 +101,7 @@ const Container: FC<ContainerProps> = ({children}) => {
           <SectionContainer
             style={styles.containerExpanded}
             onLayout={(e) => {
-              heightExpanded.current = e.nativeEvent.layout.height
+              heightExpanded.value = e.nativeEvent.layout.height
             }}>
             {expandedChildren}
           </SectionContainer>
@@ -111,7 +110,7 @@ const Container: FC<ContainerProps> = ({children}) => {
           <SectionContainer
             style={animateCollapsedStyles}
             onLayout={(e) => {
-              heightCollapsed.current = e.nativeEvent.layout.height
+              heightCollapsed.value = e.nativeEvent.layout.height
             }}>
             {collapsedChildren}
           </SectionContainer>
@@ -125,7 +124,7 @@ const Container: FC<ContainerProps> = ({children}) => {
             heightExpanded={heightExpanded}
             heightKnob={heightKnob}
             onLayout={(e) => {
-              heightKnob.current = e.nativeEvent.layout.height
+              heightKnob.value = e.nativeEvent.layout.height
             }}
             pressed={pressed}
             expanded={expanded}>

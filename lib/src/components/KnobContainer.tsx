@@ -14,9 +14,9 @@ export type KnobContainerProps = PropsWithChildren<{
   accessibilityHint?: ViewProps['accessibilityHint']
   accessibilityLabel?: ViewProps['accessibilityLabel']
   expanded: SharedValue<boolean>
-  heightCollapsed: RefObject<number>
-  heightExpanded: RefObject<number>
-  heightKnob: RefObject<number>
+  heightCollapsed: SharedValue<number>
+  heightExpanded: SharedValue<number>
+  heightKnob: SharedValue<number>
   heightOffset: SharedValue<number>
   onLayout?: ViewProps['onLayout']
   pressed: SharedValue<boolean>
@@ -42,18 +42,18 @@ const KnobContainer: FC<KnobContainerProps> = ({
       base.value = offset.value !== 0 ? offset.value : 0
     })
     .onChange((event) => {
-      const maxDragDistance = heightExpanded.current! - heightCollapsed.current!
+      const maxDragDistance = heightExpanded.value! - heightCollapsed.value!
       offset.value =
         base.value +
         (expanded.value
           ? Math.min(Math.max(event.translationY, -maxDragDistance), 0)
           : Math.min(Math.max(0, event.translationY), maxDragDistance))
       heightOffset.value = expanded.value
-        ? offset.value - heightCollapsed.current!
+        ? offset.value - heightCollapsed.value!
         : offset.value
     })
     .onFinalize(() => {
-      const maxDragDistance = heightExpanded.current! - heightCollapsed.current!
+      const maxDragDistance = heightExpanded.value! - heightCollapsed.value!
       const toggleLimit = maxDragDistance / 2
       expanded.value = +offset.value > toggleLimit
       offset.value = withClamp(
@@ -69,7 +69,7 @@ const KnobContainer: FC<KnobContainerProps> = ({
     })
 
   const handleTapEnd = () => {
-    const maxDragDistance = heightExpanded.current! - heightCollapsed.current!
+    const maxDragDistance = heightExpanded.value! - heightCollapsed.value!
     expanded.value = !expanded.value
     offset.value = withClamp(
       {min: 0, max: maxDragDistance},
