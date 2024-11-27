@@ -71,7 +71,6 @@ const Container: FC<ContainerProps> = ({children}) => {
   const heightCollapsed = useRef<number>(50)
   const heightExpanded = useRef<number>(50)
   const heightKnob = useRef<number>(50)
-  const height = useSharedValue<number>(50)
   const heightOffset = useSharedValue<number>(0)
   const pressed = useSharedValue<boolean>(false)
   const expanded = useSharedValue<boolean>(false)
@@ -96,14 +95,6 @@ const Container: FC<ContainerProps> = ({children}) => {
     }
   })
 
-  const updateHeight = () => {
-    if (!pressed.value) {
-      height.value =
-        (expanded.value ? heightExpanded.current : heightCollapsed.current) +
-        heightKnob.current
-    }
-  }
-
   return (
     <GestureHandlerRootView>
       <Animated.View style={[styles.wrapper, animateHeightStyles]}>
@@ -112,7 +103,6 @@ const Container: FC<ContainerProps> = ({children}) => {
             style={styles.containerExpanded}
             onLayout={(e) => {
               heightExpanded.current = e.nativeEvent.layout.height
-              updateHeight()
             }}>
             {expandedChildren}
           </SectionContainer>
@@ -122,7 +112,6 @@ const Container: FC<ContainerProps> = ({children}) => {
             style={animateCollapsedStyles}
             onLayout={(e) => {
               heightCollapsed.current = e.nativeEvent.layout.height
-              updateHeight()
             }}>
             {collapsedChildren}
           </SectionContainer>
@@ -137,7 +126,6 @@ const Container: FC<ContainerProps> = ({children}) => {
             heightKnob={heightKnob}
             onLayout={(e) => {
               heightKnob.current = e.nativeEvent.layout.height
-              updateHeight()
             }}
             pressed={pressed}
             expanded={expanded}>
