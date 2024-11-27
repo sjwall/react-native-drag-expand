@@ -1,6 +1,6 @@
 {
   "name": "react-native-drag-expand",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "main": "./dist/commonjs/index.js",
   "author": "Sam Wall <oss@samuelwall.co.uk>",
   "license": "MIT",
