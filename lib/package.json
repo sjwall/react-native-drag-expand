@@ -58,7 +58,7 @@
     }
   },
   "scripts": {
-    "prepare": "bob build"
+    "prepare": "cp ../README.md ../LICENSE ../demo.gif ./ && bob build"
   },
   "files": [
     "src",
