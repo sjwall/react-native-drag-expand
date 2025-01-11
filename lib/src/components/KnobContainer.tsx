@@ -79,12 +79,15 @@ const KnobContainer: FC<KnobContainerProps> = ({
 
   const tap = Gesture.Tap().onEnd(handleTapEnd)
 
-  const animatedStyles = useAnimatedStyle(() => ({
-    transform: [
-      {translateY: offset.value},
-      // {scale: withTiming(pressed.value ? 1.2 : 1)},
-    ],
-  }))
+  const animatedStyles = useAnimatedStyle(
+    () => ({
+      transform: [
+        {translateY: offset.value},
+        // {scale: withTiming(pressed.value ? 1.2 : 1)},
+      ],
+    }),
+    [offset],
+  )
 
   return (
     <GestureDetector gesture={Gesture.Exclusive(tap, pan)}>

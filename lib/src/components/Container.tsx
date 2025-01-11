@@ -74,12 +74,15 @@ const Container: FC<ContainerProps> = ({children}) => {
   const pressed = useSharedValue<boolean>(false)
   const expanded = useSharedValue<boolean>(false)
 
-  const animateHeightStyles = useAnimatedStyle(() => ({
-    height:
-      (expanded.value ? heightExpanded.value : heightCollapsed.value) +
-      heightKnob.value +
-      heightOffset.value,
-  }))
+  const animateHeightStyles = useAnimatedStyle(
+    () => ({
+      height:
+        (expanded.value ? heightExpanded.value : heightCollapsed.value) +
+        heightKnob.value +
+        heightOffset.value,
+    }),
+    [expanded, heightExpanded, heightCollapsed, heightKnob, heightOffset],
+  )
 
   const animateCollapsedStyles = useAnimatedStyle(() => {
     if (heightOffset.value === 0) {
@@ -92,7 +95,7 @@ const Container: FC<ContainerProps> = ({children}) => {
     return {
       opacity: expanded.value ? diff : 1 - diff,
     }
-  })
+  }, [heightOffset, expanded, heightExpanded, heightCollapsed])
 
   return (
     <GestureHandlerRootView>
