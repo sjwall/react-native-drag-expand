@@ -1,7 +1,7 @@
 # react-native-drag-expand
 
 <h3 align="center">
-  Bring your own UI drag expand view.
+  Bring your own UI, headless drag expand view.
 </h3>
 
 [![npm version](https://badge.fury.io/js/react-native-drag-expand.svg)][npm]
