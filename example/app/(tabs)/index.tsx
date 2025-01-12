@@ -1,10 +1,12 @@
-import {DragExpandView} from 'react-native-drag-expand'
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native'
+import {DragExpandView, DragExpandViewRef} from 'react-native-drag-expand'
+import {View, Text, StyleSheet, TouchableOpacity, Button} from 'react-native'
+import {useRef} from 'react'
 
 export default function HomeScreen() {
+  const ref = useRef<DragExpandViewRef>(null)
   return (
     <View style={styles.wrapper}>
-      <DragExpandView>
+      <DragExpandView ref={ref}>
         <DragExpandView.Collapsed>
           <View style={styles.collapsedContainer}>
             <Text>A</Text>
@@ -33,6 +35,11 @@ export default function HomeScreen() {
           </View>
         </DragExpandView.Knob>
       </DragExpandView>
+      <Text>Content below</Text>
+      <Button
+        onPress={() => ref.current?.toggle()}
+        title="Press me to toggle."
+      />
     </View>
   )
 }
