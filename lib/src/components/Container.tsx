@@ -4,6 +4,7 @@ import React, {
   forwardRef,
   useCallback,
   useMemo,
+  useState,
   type PropsWithChildren,
   type ReactElement,
   type ReactNode,
@@ -75,6 +76,10 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
       ]
     }, [children])
 
+    const [pointerStyle, setPointerStyle] = useState<
+      (typeof styles)['disablePointer'] | undefined
+    >(undefined)
+
     const heightCollapsed = useSharedValue<number>(0)
     const heightExpanded = useSharedValue<number>(0)
     const heightKnob = useSharedValue<number>(0)
@@ -95,9 +100,15 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
     const moveToEndPosition = useCallback(() => {
       const maxDragDistance = heightExpanded.value! - heightCollapsed.value!
       const newValue = expanded.value ? maxDragDistance : 0
-      knobYTranslation.value = withTiming(newValue, {
-        duration: animationDuration.value,
-      })
+      knobYTranslation.value = withTiming(
+        newValue,
+        {
+          duration: animationDuration.value,
+        },
+        (finished) =>
+          finished &&
+          setPointerStyle(expanded.value ? styles.disablePointer : undefined),
+      )
     }, [])
 
     const onKnobMove = useCallback<KnobContainerProps['onMove']>(
@@ -145,7 +156,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
           )}
           {collapsedChildren && (
             <SectionContainer
-              style={animateCollapsedStyles}
+              style={[animateCollapsedStyles, pointerStyle]}
               onLayout={(e) => {
                 heightCollapsed.value = e.nativeEvent.layout.height
               }}>
@@ -183,6 +194,9 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     overflow: 'hidden',
+  },
+  disablePointer: {
+    pointerEvents: 'none',
   },
 })
 
