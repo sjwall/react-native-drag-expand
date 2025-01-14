@@ -8,7 +8,6 @@ import {type ViewProps} from 'react-native'
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withTiming,
   type SharedValue,
 } from 'react-native-reanimated'
 import {Gesture, GestureDetector} from 'react-native-gesture-handler'
@@ -20,8 +19,8 @@ export type KnobContainerProps = PropsWithChildren<{
   heightCollapsed: SharedValue<number>
   heightExpanded: SharedValue<number>
   yTranslation: SharedValue<number>
-  animationDuration: SharedValue<number>
-  onLayout?: ViewProps['onLayout']
+  onLayout: ViewProps['onLayout']
+  onMove: (value?: number | 'end', animate?: boolean) => void
   pressed: SharedValue<boolean>
 }>
 
@@ -43,29 +42,12 @@ const KnobContainer = forwardRef<KnobContainerRef, KnobContainerProps>(
       heightExpanded,
       yTranslation,
       onLayout,
+      onMove,
       pressed,
-      animationDuration,
     },
     ref,
   ) => {
     const base = useSharedValue<number>(0)
-
-    const enableAnimation = () => {
-      const maxDragDistance = heightExpanded.value - heightCollapsed.value
-      const maxDuration = 240
-      animationDuration.value =
-        !expanded.value && yTranslation.value === 0
-          ? maxDuration
-          : (1 / maxDragDistance) * yTranslation.value * maxDuration
-    }
-
-    const moveToEndPosition = () => {
-      const maxDragDistance = heightExpanded.value! - heightCollapsed.value!
-      const newValue = expanded.value ? maxDragDistance : 0
-      yTranslation.value = withTiming(newValue, {
-        duration: animationDuration.value,
-      })
-    }
 
     const pan = Gesture.Pan()
       .onBegin(() => {
@@ -74,24 +56,25 @@ const KnobContainer = forwardRef<KnobContainerRef, KnobContainerProps>(
       })
       .onChange((event) => {
         const maxDragDistance = heightExpanded.value! - heightCollapsed.value!
-        yTranslation.value =
+        onMove(
           base.value +
-          (expanded.value
-            ? Math.min(Math.max(event.translationY, -maxDragDistance), 0)
-            : Math.min(Math.max(0, event.translationY), maxDragDistance))
+            (expanded.value
+              ? Math.min(Math.max(event.translationY, -maxDragDistance), 0)
+              : Math.min(Math.max(0, event.translationY), maxDragDistance)),
+          false,
+        )
       })
       .onFinalize(() => {
         const maxDragDistance = heightExpanded.value! - heightCollapsed.value!
         const toggleLimit = maxDragDistance / 2
         expanded.value = +yTranslation.value > toggleLimit
-        enableAnimation()
-        moveToEndPosition()
+        onMove()
         pressed.value = false
       })
 
     const handleTapEnd = () => {
       expanded.value = !expanded.value
-      moveToEndPosition()
+      onMove()
     }
 
     const tap = Gesture.Tap().onEnd(handleTapEnd)
@@ -104,18 +87,9 @@ const KnobContainer = forwardRef<KnobContainerRef, KnobContainerProps>(
     )
 
     useImperativeHandle(ref, () => ({
-      open: () => {
-        enableAnimation()
-        !expanded && handleTapEnd()
-      },
-      close: () => {
-        enableAnimation()
-        expanded && handleTapEnd()
-      },
-      toggle: () => {
-        enableAnimation()
-        handleTapEnd()
-      },
+      open: () => !expanded.value && handleTapEnd(),
+      close: () => expanded.value && handleTapEnd(),
+      toggle: handleTapEnd,
       isExpanded: () => expanded.value,
     }))
 

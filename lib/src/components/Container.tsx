@@ -2,6 +2,7 @@ import React, {
   Children,
   cloneElement,
   forwardRef,
+  useCallback,
   useMemo,
   type PropsWithChildren,
   type ReactElement,
@@ -11,13 +12,17 @@ import {StyleSheet} from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
+  withTiming,
 } from 'react-native-reanimated'
 import {GestureHandlerRootView} from 'react-native-gesture-handler'
 import Knob, {type KnobProps} from './Knob'
 import Collapsed from './Collapsed'
 import Expanded from './Expanded'
 import SectionContainer from './SectionContainer'
-import KnobContainer, {type KnobContainerRef} from './KnobContainer'
+import KnobContainer, {
+  type KnobContainerProps,
+  type KnobContainerRef,
+} from './KnobContainer'
 
 export type ContainerProps = PropsWithChildren
 
@@ -78,6 +83,37 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
     const expanded = useSharedValue<boolean>(false)
     const animationDuration = useSharedValue<number>(0)
 
+    const enableAnimation = useCallback(() => {
+      const maxDragDistance = heightExpanded.value - heightCollapsed.value
+      const maxDuration = 240
+      animationDuration.value =
+        expanded.value && knobYTranslation.value === 0
+          ? maxDuration
+          : (1 / maxDragDistance) * knobYTranslation.value * maxDuration
+    }, [])
+
+    const moveToEndPosition = useCallback(() => {
+      const maxDragDistance = heightExpanded.value! - heightCollapsed.value!
+      const newValue = expanded.value ? maxDragDistance : 0
+      knobYTranslation.value = withTiming(newValue, {
+        duration: animationDuration.value,
+      })
+    }, [])
+
+    const onKnobMove = useCallback<KnobContainerProps['onMove']>(
+      (value = 'end', animate = true) => {
+        if (animate) {
+          enableAnimation()
+        }
+        if (value === 'end') {
+          moveToEndPosition()
+        } else {
+          knobYTranslation.value = value
+        }
+      },
+      [enableAnimation, moveToEndPosition],
+    )
+
     const animateHeightStyles = useAnimatedStyle(
       () => ({
         height:
@@ -124,10 +160,10 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
               heightCollapsed={heightCollapsed}
               heightExpanded={heightExpanded}
               yTranslation={knobYTranslation}
-              animationDuration={animationDuration}
               onLayout={(e) => {
                 heightKnob.value = e.nativeEvent.layout.height
               }}
+              onMove={onKnobMove}
               pressed={pressed}
               expanded={expanded}>
               {knobChildren}
