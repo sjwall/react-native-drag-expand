@@ -73,32 +73,27 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
     const heightCollapsed = useSharedValue<number>(0)
     const heightExpanded = useSharedValue<number>(0)
     const heightKnob = useSharedValue<number>(0)
-    const heightOffset = useSharedValue<number>(0)
+    const knobYTranslation = useSharedValue<number>(0)
     const pressed = useSharedValue<boolean>(false)
     const expanded = useSharedValue<boolean>(false)
+    const animationDuration = useSharedValue<number>(0)
 
     const animateHeightStyles = useAnimatedStyle(
       () => ({
         height:
-          (expanded.value ? heightExpanded.value : heightCollapsed.value) +
-          heightKnob.value +
-          heightOffset.value,
+          heightCollapsed.value + heightKnob.value + knobYTranslation.value ||
+          undefined,
       }),
-      [expanded, heightExpanded, heightCollapsed, heightKnob, heightOffset],
+      [knobYTranslation, heightCollapsed, heightKnob],
     )
 
     const animateCollapsedStyles = useAnimatedStyle(() => {
-      if (heightOffset.value === 0) {
-        return {
-          opacity: expanded.value ? 0 : 1,
-        }
-      }
-      const heightDiff = heightExpanded.value - heightCollapsed.value
-      const diff = (1 / heightDiff) * Math.abs(heightOffset.value)
+      const maxDragDistance = heightExpanded.value - heightCollapsed.value
+      const diff = (1 / maxDragDistance) * knobYTranslation.value
       return {
-        opacity: expanded.value ? diff : 1 - diff,
+        opacity: 1 - diff,
       }
-    }, [heightOffset, expanded, heightExpanded, heightCollapsed])
+    }, [knobYTranslation, heightExpanded, heightCollapsed])
 
     return (
       <GestureHandlerRootView>
@@ -126,10 +121,10 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
               ref={ref}
               accessibilityHint={knobAccessibilityHint}
               accessibilityLabel={knobAccessibilityLabel}
-              heightOffset={heightOffset}
               heightCollapsed={heightCollapsed}
               heightExpanded={heightExpanded}
-              heightKnob={heightKnob}
+              yTranslation={knobYTranslation}
+              animationDuration={animationDuration}
               onLayout={(e) => {
                 heightKnob.value = e.nativeEvent.layout.height
               }}
