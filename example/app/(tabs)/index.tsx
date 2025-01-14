@@ -9,6 +9,10 @@ export default function HomeScreen() {
       <DragExpandView ref={ref}>
         <DragExpandView.Collapsed>
           <View style={styles.collapsedContainer}>
+            <Button
+              onPress={() => ref.current?.toggle()}
+              title="Press me to toggle."
+            />
             <Text>A</Text>
             <Text>A</Text>
             <Text>A</Text>
