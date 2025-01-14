@@ -22,6 +22,12 @@ export default function HomeScreen() {
             <Text>B</Text>
             <Text>B</Text>
             <Text>B</Text>
+            <Text>B</Text>
+            <Text>B</Text>
+            <Text>B</Text>
+            <Text>B</Text>
+            <Text>B</Text>
+            <Text>B</Text>
           </View>
         </DragExpandView.Expanded>
         <DragExpandView.Knob>
