@@ -136,7 +136,11 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
 
     const animateCollapsedStyles = useAnimatedStyle(() => {
       const maxDragDistance = heightExpanded.value - heightCollapsed.value
-      const diff = (1 / maxDragDistance) * knobYTranslation.value
+      let diff = (1 / maxDragDistance) * knobYTranslation.value
+      // This occurs when the difference in collapsed and expand heights is 0
+      if (isNaN(diff)) {
+        diff = 0
+      }
       return {
         opacity: 1 - diff,
       }
