@@ -150,6 +150,10 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
               style={styles.containerExpanded}
               onLayout={(e) => {
                 heightExpanded.value = e.nativeEvent.layout.height
+                if (expanded.value) {
+                  enableAnimation()
+                  moveToEndPosition()
+                }
               }}>
               {expandedChildren}
             </SectionContainer>
@@ -173,6 +177,10 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
               yTranslation={knobYTranslation}
               onLayout={(e) => {
                 heightKnob.value = e.nativeEvent.layout.height
+                if (expanded.value) {
+                  enableAnimation()
+                  moveToEndPosition()
+                }
               }}
               onMove={onKnobMove}
               pressed={pressed}
