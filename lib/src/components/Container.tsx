@@ -14,6 +14,7 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
+  runOnJS,
 } from 'react-native-reanimated'
 import {GestureHandlerRootView} from 'react-native-gesture-handler'
 import Knob, {type KnobProps} from './Knob'
@@ -89,6 +90,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
     const animationDuration = useSharedValue<number>(0)
 
     const enableAnimation = useCallback(() => {
+      'worklet'
       const maxDragDistance = heightExpanded.value - heightCollapsed.value
       const maxDuration = 240
       animationDuration.value =
@@ -98,6 +100,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
     }, [])
 
     const moveToEndPosition = useCallback(() => {
+      'worklet'
       const maxDragDistance = heightExpanded.value! - heightCollapsed.value!
       const newValue = expanded.value ? maxDragDistance : 0
       knobYTranslation.value = withTiming(
@@ -107,12 +110,15 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
         },
         (finished) =>
           finished &&
-          setPointerStyle(expanded.value ? styles.disablePointer : undefined),
+          runOnJS(setPointerStyle)(
+            expanded.value ? styles.disablePointer : undefined,
+          ),
       )
     }, [])
 
     const onKnobMove = useCallback<KnobContainerProps['onMove']>(
       (value = 'end', animate = true) => {
+        'worklet'
         if (animate) {
           enableAnimation()
         }
@@ -147,7 +153,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
     }, [knobYTranslation, heightExpanded, heightCollapsed])
 
     return (
-      <GestureHandlerRootView>
+      <GestureHandlerRootView style={styles.root}>
         <Animated.View style={[styles.wrapper, animateHeightStyles]}>
           {expandedChildren && (
             <SectionContainer
@@ -206,6 +212,9 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     overflow: 'hidden',
+  },
+  root: {
+    position: 'relative',
   },
   disablePointer: {
     pointerEvents: 'none',

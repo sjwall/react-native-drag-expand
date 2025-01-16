@@ -4,7 +4,7 @@ import React, {
   useImperativeHandle,
   type PropsWithChildren,
 } from 'react'
-import {StyleSheet, type ViewProps} from 'react-native'
+import {type ViewProps} from 'react-native'
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -73,6 +73,7 @@ const KnobContainer = forwardRef<KnobContainerRef, KnobContainerProps>(
       })
 
     const handleTapEnd = () => {
+      'worklet'
       expanded.value = !expanded.value
       onMove()
     }
@@ -106,7 +107,7 @@ const KnobContainer = forwardRef<KnobContainerRef, KnobContainerProps>(
               handleTapEnd()
             }
           }}
-          style={[styles.disablePointer, animatedStyles]}
+          style={animatedStyles}
           onLayout={onLayout}>
           {children}
         </Animated.View>
@@ -114,12 +115,6 @@ const KnobContainer = forwardRef<KnobContainerRef, KnobContainerProps>(
     )
   },
 )
-
-const styles = StyleSheet.create({
-  disablePointer: {
-    pointerEvents: 'none',
-  },
-})
 
 KnobContainer.displayName = 'KnobContainer'
 
