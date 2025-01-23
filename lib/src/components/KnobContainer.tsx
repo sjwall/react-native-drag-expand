@@ -20,7 +20,7 @@ export type KnobContainerProps = PropsWithChildren<{
   heightExpanded: SharedValue<number>
   yTranslation: SharedValue<number>
   onLayout: ViewProps['onLayout']
-  onMove: (value?: number | 'end', animate?: boolean) => void
+  onMove: (value?: number | 'end' | true | false, animate?: boolean) => void
   pressed: SharedValue<boolean>
 }>
 
@@ -68,16 +68,14 @@ const KnobContainer = forwardRef<KnobContainerRef, KnobContainerProps>(
         if (success) {
           const maxDragDistance = heightExpanded.value! - heightCollapsed.value!
           const toggleLimit = maxDragDistance / 2
-          expanded.value = +yTranslation.value > toggleLimit
-          onMove()
+          onMove(+yTranslation.value > toggleLimit)
         }
         pressed.value = false
       })
 
     const handleTapEnd = () => {
       'worklet'
-      expanded.value = !expanded.value
-      onMove()
+      onMove(!expanded.value)
     }
 
     const tap = Gesture.Tap().onEnd(handleTapEnd)

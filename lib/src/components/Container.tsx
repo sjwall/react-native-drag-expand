@@ -119,10 +119,14 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
     const onKnobMove = useCallback<KnobContainerProps['onMove']>(
       (value = 'end', animate = true) => {
         'worklet'
+        const isBoolean = value === true || value === false
+        if (isBoolean) {
+          expanded.value = value
+        }
         if (animate) {
           enableAnimation()
         }
-        if (value === 'end') {
+        if (value === 'end' || isBoolean) {
           moveToEndPosition()
         } else {
           knobYTranslation.value = value
