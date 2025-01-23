@@ -193,6 +193,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
         <Animated.View style={[styles.wrapper, animateHeightStyles]}>
           {expandedChildren && (
             <SectionContainer
+              aria-hidden={pointerStyle === undefined}
               style={styles.containerExpanded}
               onLayout={handleExpandedLayout}>
               {expandedChildren}
@@ -200,6 +201,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
           )}
           {collapsedChildren && (
             <SectionContainer
+              aria-hidden={pointerStyle !== undefined}
               style={[animateCollapsedStyles, pointerStyle]}
               onLayout={handleCollapsedLayout}>
               {collapsedChildren}
