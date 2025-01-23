@@ -64,11 +64,13 @@ const KnobContainer = forwardRef<KnobContainerRef, KnobContainerProps>(
           false,
         )
       })
-      .onFinalize(() => {
-        const maxDragDistance = heightExpanded.value! - heightCollapsed.value!
-        const toggleLimit = maxDragDistance / 2
-        expanded.value = +yTranslation.value > toggleLimit
-        onMove()
+      .onFinalize((_, success) => {
+        if (success) {
+          const maxDragDistance = heightExpanded.value! - heightCollapsed.value!
+          const toggleLimit = maxDragDistance / 2
+          expanded.value = +yTranslation.value > toggleLimit
+          onMove()
+        }
         pressed.value = false
       })
 
