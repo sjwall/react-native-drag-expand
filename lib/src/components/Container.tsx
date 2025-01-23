@@ -211,10 +211,11 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
             <KnobContainer
               ref={ref}
               accessibilityHint={knobAccessibilityHint}
-              accessibilityLabel={
+              aria-label={
                 knobAccessibilityLabel ??
                 `Tap to ${pointerStyle === undefined ? 'expand' : 'collapse'} content`
               }
+              aria-expanded={pointerStyle !== undefined}
               heightCollapsed={heightCollapsed}
               heightExpanded={heightExpanded}
               yTranslation={knobYTranslation}

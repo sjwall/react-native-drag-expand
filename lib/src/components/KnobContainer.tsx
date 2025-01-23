@@ -4,7 +4,7 @@ import React, {
   useImperativeHandle,
   type PropsWithChildren,
 } from 'react'
-import {type ViewProps} from 'react-native'
+import type {AccessibilityProps, ViewProps} from 'react-native'
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -12,17 +12,20 @@ import Animated, {
 } from 'react-native-reanimated'
 import {Gesture, GestureDetector} from 'react-native-gesture-handler'
 
-export type KnobContainerProps = PropsWithChildren<{
-  accessibilityHint?: ViewProps['accessibilityHint']
-  accessibilityLabel?: ViewProps['accessibilityLabel']
-  expanded: SharedValue<boolean>
-  heightCollapsed: SharedValue<number>
-  heightExpanded: SharedValue<number>
-  yTranslation: SharedValue<number>
-  onLayout: ViewProps['onLayout']
-  onMove: (value?: number | 'end' | true | false, animate?: boolean) => void
-  pressed: SharedValue<boolean>
-}>
+export type KnobContainerProps = PropsWithChildren<
+  {
+    expanded: SharedValue<boolean>
+    heightCollapsed: SharedValue<number>
+    heightExpanded: SharedValue<number>
+    yTranslation: SharedValue<number>
+    onLayout: ViewProps['onLayout']
+    onMove: (value?: number | 'end' | true | false, animate?: boolean) => void
+    pressed: SharedValue<boolean>
+  } & Pick<
+    AccessibilityProps,
+    'aria-label' | 'aria-expanded' | 'accessibilityHint'
+  >
+>
 
 export type KnobContainerRef = {
   open: () => void
@@ -35,7 +38,8 @@ const KnobContainer = forwardRef<KnobContainerRef, KnobContainerProps>(
   (
     {
       accessibilityHint,
-      accessibilityLabel,
+      'aria-label': ariaLabel,
+      'aria-expanded': ariaExpanded,
       children,
       expanded,
       heightCollapsed,
@@ -99,7 +103,8 @@ const KnobContainer = forwardRef<KnobContainerRef, KnobContainerProps>(
         <Animated.View
           accessible
           accessibilityRole="adjustable"
-          accessibilityLabel={accessibilityLabel}
+          aria-label={ariaLabel}
+          aria-expanded={ariaExpanded}
           accessibilityHint={accessibilityHint}
           accessibilityActions={[{name: 'toggle', label: 'Toggle'}]}
           onAccessibilityAction={(event) => {
