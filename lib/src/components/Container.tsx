@@ -160,11 +160,11 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
       Exclude<SectionContainerProps['onLayout'], undefined>
     >(
       (e) => {
-      heightExpanded.value = e.nativeEvent.layout.height
-      if (expanded.value) {
-        enableAnimation()
-        moveToEndPosition()
-      }
+        heightExpanded.value = e.nativeEvent.layout.height
+        if (expanded.value) {
+          enableAnimation()
+          moveToEndPosition()
+        }
       },
       [enableAnimation, moveToEndPosition],
     )
@@ -179,11 +179,11 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
       Exclude<SectionContainerProps['onLayout'], undefined>
     >(
       (e) => {
-      heightKnob.value = e.nativeEvent.layout.height
-      if (expanded.value) {
-        enableAnimation()
-        moveToEndPosition()
-      }
+        heightKnob.value = e.nativeEvent.layout.height
+        if (expanded.value) {
+          enableAnimation()
+          moveToEndPosition()
+        }
       },
       [enableAnimation, moveToEndPosition],
     )
