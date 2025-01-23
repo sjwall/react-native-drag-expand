@@ -20,7 +20,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler'
 import Knob, {type KnobProps} from './Knob'
 import Collapsed from './Collapsed'
 import Expanded from './Expanded'
-import SectionContainer from './SectionContainer'
+import SectionContainer, {type SectionContainerProps} from './SectionContainer'
 import KnobContainer, {
   type KnobContainerProps,
   type KnobContainerRef,
@@ -152,28 +152,52 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
       }
     }, [knobYTranslation, heightExpanded, heightCollapsed])
 
+    const handleExpandedLayout = useCallback<
+      Exclude<SectionContainerProps['onLayout'], undefined>
+    >(
+      (e) => {
+      heightExpanded.value = e.nativeEvent.layout.height
+      if (expanded.value) {
+        enableAnimation()
+        moveToEndPosition()
+      }
+      },
+      [enableAnimation, moveToEndPosition],
+    )
+
+    const handleCollapsedLayout = useCallback<
+      Exclude<SectionContainerProps['onLayout'], undefined>
+    >((e) => {
+      heightCollapsed.value = e.nativeEvent.layout.height
+    }, [])
+
+    const handleKnobLayout = useCallback<
+      Exclude<SectionContainerProps['onLayout'], undefined>
+    >(
+      (e) => {
+      heightKnob.value = e.nativeEvent.layout.height
+      if (expanded.value) {
+        enableAnimation()
+        moveToEndPosition()
+      }
+      },
+      [enableAnimation, moveToEndPosition],
+    )
+
     return (
       <GestureHandlerRootView style={styles.root}>
         <Animated.View style={[styles.wrapper, animateHeightStyles]}>
           {expandedChildren && (
             <SectionContainer
               style={styles.containerExpanded}
-              onLayout={(e) => {
-                heightExpanded.value = e.nativeEvent.layout.height
-                if (expanded.value) {
-                  enableAnimation()
-                  moveToEndPosition()
-                }
-              }}>
+              onLayout={handleExpandedLayout}>
               {expandedChildren}
             </SectionContainer>
           )}
           {collapsedChildren && (
             <SectionContainer
               style={[animateCollapsedStyles, pointerStyle]}
-              onLayout={(e) => {
-                heightCollapsed.value = e.nativeEvent.layout.height
-              }}>
+              onLayout={handleCollapsedLayout}>
               {collapsedChildren}
             </SectionContainer>
           )}
@@ -185,13 +209,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
               heightCollapsed={heightCollapsed}
               heightExpanded={heightExpanded}
               yTranslation={knobYTranslation}
-              onLayout={(e) => {
-                heightKnob.value = e.nativeEvent.layout.height
-                if (expanded.value) {
-                  enableAnimation()
-                  moveToEndPosition()
-                }
-              }}
+              onLayout={handleKnobLayout}
               onMove={onKnobMove}
               pressed={pressed}
               expanded={expanded}>
