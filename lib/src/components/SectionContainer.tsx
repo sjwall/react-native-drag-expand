@@ -6,10 +6,12 @@ export type SectionContainerProps = PropsWithChildren<
   {
     onLayout: ViewProps['onLayout']
     style: ViewProps['style']
-  } & Pick<AccessibilityProps, 'aria-hidden'>
+  } & Pick<AccessibilityProps, 'aria-hidden'> &
+    Pick<ViewProps, 'nativeID'>
 >
 
 const SectionContainer: FC<SectionContainerProps> = ({
+  nativeID,
   'aria-hidden': ariaHidden,
   children,
   onLayout,
@@ -17,6 +19,7 @@ const SectionContainer: FC<SectionContainerProps> = ({
 }) => {
   return (
     <Animated.View
+      nativeID={nativeID}
       aria-hidden={ariaHidden}
       onLayout={onLayout}
       style={style}>

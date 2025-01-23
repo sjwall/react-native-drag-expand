@@ -14,6 +14,7 @@ import {Gesture, GestureDetector} from 'react-native-gesture-handler'
 
 export type KnobContainerProps = PropsWithChildren<
   {
+    'aria-controls'?: string
     expanded: SharedValue<boolean>
     heightCollapsed: SharedValue<number>
     heightExpanded: SharedValue<number>
@@ -39,6 +40,7 @@ const KnobContainer = forwardRef<KnobContainerRef, KnobContainerProps>(
     {
       accessibilityHint,
       'aria-label': ariaLabel,
+      'aria-controls': ariaControls,
       'aria-expanded': ariaExpanded,
       children,
       expanded,
@@ -105,6 +107,7 @@ const KnobContainer = forwardRef<KnobContainerRef, KnobContainerProps>(
           accessibilityRole="adjustable"
           aria-label={ariaLabel}
           aria-expanded={ariaExpanded}
+          aria-controls={ariaControls}
           accessibilityHint={accessibilityHint}
           accessibilityActions={[{name: 'toggle', label: 'Toggle'}]}
           onAccessibilityAction={(event) => {

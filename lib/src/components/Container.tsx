@@ -3,6 +3,7 @@ import React, {
   cloneElement,
   forwardRef,
   useCallback,
+  useId,
   useMemo,
   useState,
   type PropsWithChildren,
@@ -76,6 +77,9 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
         knobAccessibilityHint,
       ]
     }, [children])
+
+    const collapsedId = useId()
+    const expandedId = useId()
 
     const [pointerStyle, setPointerStyle] = useState<
       (typeof styles)['disablePointer'] | undefined
@@ -193,6 +197,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
         <Animated.View style={[styles.wrapper, animateHeightStyles]}>
           {expandedChildren && (
             <SectionContainer
+              nativeID={expandedId}
               aria-hidden={pointerStyle === undefined}
               style={styles.containerExpanded}
               onLayout={handleExpandedLayout}>
@@ -201,6 +206,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
           )}
           {collapsedChildren && (
             <SectionContainer
+              nativeID={collapsedId}
               aria-hidden={pointerStyle !== undefined}
               style={[animateCollapsedStyles, pointerStyle]}
               onLayout={handleCollapsedLayout}>
@@ -216,6 +222,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
                 `Tap to ${pointerStyle === undefined ? 'expand' : 'collapse'} content`
               }
               aria-expanded={pointerStyle !== undefined}
+              aria-controls={`${expandedId} ${collapsedId}`}
               heightCollapsed={heightCollapsed}
               heightExpanded={heightExpanded}
               yTranslation={knobYTranslation}
