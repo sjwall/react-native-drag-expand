@@ -211,7 +211,10 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
             <KnobContainer
               ref={ref}
               accessibilityHint={knobAccessibilityHint}
-              accessibilityLabel={knobAccessibilityLabel}
+              accessibilityLabel={
+                knobAccessibilityLabel ??
+                `Tap to ${pointerStyle === undefined ? 'expand' : 'collapse'} content`
+              }
               heightCollapsed={heightCollapsed}
               heightExpanded={heightExpanded}
               yTranslation={knobYTranslation}

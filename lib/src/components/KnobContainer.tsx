@@ -99,7 +99,7 @@ const KnobContainer = forwardRef<KnobContainerRef, KnobContainerProps>(
         <Animated.View
           accessible
           accessibilityRole="adjustable"
-          accessibilityLabel={accessibilityLabel ?? 'Knob'}
+          accessibilityLabel={accessibilityLabel}
           accessibilityHint={accessibilityHint}
           accessibilityActions={[{name: 'toggle', label: 'Toggle'}]}
           onAccessibilityAction={(event) => {
