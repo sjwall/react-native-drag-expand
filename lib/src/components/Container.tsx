@@ -141,6 +141,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
 
     const animateHeightStyles = useAnimatedStyle(
       () => ({
+        overflow: 'hidden',
         height:
           heightCollapsed.value + heightKnob.value + knobYTranslation.value ||
           undefined,
@@ -194,7 +195,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
 
     return (
       <GestureHandlerRootView style={styles.root}>
-        <Animated.View style={[styles.wrapper, animateHeightStyles]}>
+        <Animated.View style={animateHeightStyles}>
           {expandedChildren && (
             <SectionContainer
               nativeID={expandedId}
@@ -208,7 +209,10 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
             <SectionContainer
               nativeID={collapsedId}
               aria-hidden={pointerStyle !== undefined}
-              style={[animateCollapsedStyles, pointerStyle]}
+              style={useMemo(
+                () => [animateCollapsedStyles, pointerStyle],
+                [animateCollapsedStyles, pointerStyle],
+              )}
               onLayout={handleCollapsedLayout}>
               {collapsedChildren}
             </SectionContainer>
@@ -244,9 +248,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-  },
-  wrapper: {
-    overflow: 'hidden',
   },
   root: {
     position: 'relative',

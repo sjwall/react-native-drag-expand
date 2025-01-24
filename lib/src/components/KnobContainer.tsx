@@ -1,7 +1,9 @@
 import 'react-native-gesture-handler'
 import React, {
   forwardRef,
+  useCallback,
   useImperativeHandle,
+  useMemo,
   type PropsWithChildren,
 } from 'react'
 import type {AccessibilityProps, ViewProps} from 'react-native'
@@ -55,36 +57,42 @@ const KnobContainer = forwardRef<KnobContainerRef, KnobContainerProps>(
   ) => {
     const base = useSharedValue<number>(0)
 
-    const pan = Gesture.Pan()
-      .onBegin(() => {
-        pressed.value = true
-        base.value = yTranslation.value !== 0 ? yTranslation.value : 0
-      })
-      .onChange((event) => {
-        const maxDragDistance = heightExpanded.value! - heightCollapsed.value!
-        onMove(
-          base.value +
-            (expanded.value
-              ? Math.min(Math.max(event.translationY, -maxDragDistance), 0)
-              : Math.min(Math.max(0, event.translationY), maxDragDistance)),
-          false,
-        )
-      })
-      .onFinalize((_, success) => {
-        if (success) {
-          const maxDragDistance = heightExpanded.value! - heightCollapsed.value!
-          const toggleLimit = maxDragDistance / 2
-          onMove(+yTranslation.value > toggleLimit)
-        }
-        pressed.value = false
-      })
+    const pan = useMemo(
+      () =>
+        Gesture.Pan()
+          .onBegin(() => {
+            pressed.value = true
+            base.value = yTranslation.value !== 0 ? yTranslation.value : 0
+          })
+          .onChange((event) => {
+            const maxDragDistance =
+              heightExpanded.value! - heightCollapsed.value!
+            onMove(
+              base.value +
+                (expanded.value
+                  ? Math.min(Math.max(event.translationY, -maxDragDistance), 0)
+                  : Math.min(Math.max(0, event.translationY), maxDragDistance)),
+              false,
+            )
+          })
+          .onFinalize((_, success) => {
+            if (success) {
+              const maxDragDistance =
+                heightExpanded.value! - heightCollapsed.value!
+              const toggleLimit = maxDragDistance / 2
+              onMove(+yTranslation.value > toggleLimit)
+            }
+            pressed.value = false
+          }),
+      [onMove],
+    )
 
-    const handleTapEnd = () => {
+    const handleTapEnd = useCallback(() => {
       'worklet'
       onMove(!expanded.value)
-    }
+    }, [onMove])
 
-    const tap = Gesture.Tap().onEnd(handleTapEnd)
+    const tap = useMemo(() => Gesture.Tap().onEnd(handleTapEnd), [handleTapEnd])
 
     const animatedStyles = useAnimatedStyle(
       () => ({
@@ -93,12 +101,16 @@ const KnobContainer = forwardRef<KnobContainerRef, KnobContainerProps>(
       [yTranslation],
     )
 
-    useImperativeHandle(ref, () => ({
-      open: () => !expanded.value && handleTapEnd(),
-      close: () => expanded.value && handleTapEnd(),
-      toggle: handleTapEnd,
-      isExpanded: () => expanded.value,
-    }))
+    useImperativeHandle(
+      ref,
+      () => ({
+        open: () => !expanded.value && handleTapEnd(),
+        close: () => expanded.value && handleTapEnd(),
+        toggle: handleTapEnd,
+        isExpanded: () => expanded.value,
+      }),
+      [handleTapEnd],
+    )
 
     return (
       <GestureDetector gesture={Gesture.Exclusive(tap, pan)}>
@@ -109,12 +121,20 @@ const KnobContainer = forwardRef<KnobContainerRef, KnobContainerProps>(
           aria-expanded={ariaExpanded}
           aria-controls={ariaControls}
           accessibilityHint={accessibilityHint}
-          accessibilityActions={[{name: 'toggle', label: 'Toggle'}]}
-          onAccessibilityAction={(event) => {
-            if (event.nativeEvent.actionName === 'toggle') {
-              handleTapEnd()
-            }
-          }}
+          accessibilityActions={useMemo(
+            () => [{name: 'toggle', label: 'Toggle'}],
+            [],
+          )}
+          onAccessibilityAction={useCallback<
+            Exclude<ViewProps['onAccessibilityAction'], undefined>
+          >(
+            (event) => {
+              if (event.nativeEvent.actionName === 'toggle') {
+                handleTapEnd()
+              }
+            },
+            [handleTapEnd],
+          )}
           style={animatedStyles}
           onLayout={onLayout}>
           {children}
