@@ -193,6 +193,11 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
       [enableAnimation, moveToEndPosition],
     )
 
+    const collapsedStyle = useMemo(
+      () => [animateCollapsedStyles, pointerStyle],
+      [animateCollapsedStyles, pointerStyle],
+    )
+
     return (
       <GestureHandlerRootView style={styles.root}>
         <Animated.View style={animateHeightStyles}>
@@ -209,10 +214,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
             <SectionContainer
               nativeID={collapsedId}
               aria-hidden={pointerStyle !== undefined}
-              style={useMemo(
-                () => [animateCollapsedStyles, pointerStyle],
-                [animateCollapsedStyles, pointerStyle],
-              )}
+              style={collapsedStyle}
               onLayout={handleCollapsedLayout}>
               {collapsedChildren}
             </SectionContainer>
