@@ -9,6 +9,8 @@
   "bugs": "https://github.com/sjwall/react-native-drag-expand/issues",
   "keywords": [
     "react-native",
+    "ios",
+    "android",
     "ui",
     "drag",
     "expand",
